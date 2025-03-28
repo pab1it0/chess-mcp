@@ -22,6 +22,8 @@ The list of tools is configurable, so you can choose which tools you want to mak
 
 Add the server configuration to your client configuration file. For example, for Claude Desktop:
 
+Copy the following configuration to your Claude Desktop configuration file at `~/.config/claude/claude-config.json`:
+
 ```json
 {
   "mcpServers": {
@@ -31,10 +33,29 @@ Add the server configuration to your client configuration file. For example, for
         "-m",
         "src.chess_mcp.main"
       ],
-      "cwd": "<full path to chess-mcp directory>",
+      "cwd": "/Users/Pavel.Shklovsky/github/chess-mcp",
       "env": {
-        "PYTHONPATH": "<full path to chess-mcp directory>"
+        "PYTHONPATH": "/Users/Pavel.Shklovsky/github/chess-mcp"
       }
+    }
+  }
+}
+```
+
+Alternatively, you can use UV for running the server:
+
+```json
+{
+  "mcpServers": {
+    "chess": {
+      "command": "/Users/Pavel.Shklovsky/.local/bin/uv",
+      "args": [
+        "--directory",
+        "/Users/Pavel.Shklovsky/github/chess-mcp",
+        "run",
+        "src/chess_mcp/main.py"
+      ],
+      "env": {}
     }
   }
 }
