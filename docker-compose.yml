@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  chess-mcp-server:
+    build:
+      context: .
+    environment:
+      - CHESS_RATE_LIMIT=${CHESS_RATE_LIMIT:-5}
+    stdin_open: true
+    tty: true

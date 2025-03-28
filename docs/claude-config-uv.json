@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "chess": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/Pavel.Shklovsky/github/chess-mcp",
+        "run",
+        "src/chess_mcp/main.py"
+      ],
+      "env": {
+        "CHESS_RATE_LIMIT": "5"
+      }
+    }
+  }
+}
