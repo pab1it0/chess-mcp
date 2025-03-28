@@ -20,35 +20,26 @@ The list of tools is configurable, so you can choose which tools you want to mak
 
 ## Usage
 
-1. Configure the rate limit for the Chess.com API (optional):
-
-```env
-# Set in environment or .env file
-CHESS_RATE_LIMIT=5  # requests per second
-```
-
-2. Add the server configuration to your client configuration file. For example, for Claude Desktop:
+1. Add the server configuration to your client configuration file. For example, for Claude Desktop:
 
 ```json
 {
   "mcpServers": {
     "chess": {
-      "command": "python",
+      "command": "uv",
       "args": [
-        "-m",
-        "src.chess_mcp.main"
+        "--directory",
+        "<full path to chess-mcp directory>",
+        "run",
+        "src/chess_mcp/main.py"
       ],
-      "cwd": "<full path to chess-mcp directory>",
-      "env": {
-        "CHESS_RATE_LIMIT": "5",
-        "PYTHONPATH": "<full path to chess-mcp directory>"
-      }
+      "env": {}
     }
   }
 }
 ```
 
-> Note: if you see `Error: spawn python ENOENT` in Claude Desktop, you may need to specify the full path to `python`.
+> Note: if you see `Error: spawn uv ENOENT` in Claude Desktop, you may need to specify the full path to `uv` or set the environment variable `NO_UV=1` in the configuration.
 
 ## Docker Usage
 
@@ -64,22 +55,10 @@ docker build -t chess-mcp-server .
 
 ### Running with Docker
 
-You can run the server using Docker in several ways:
-
-#### Using docker run directly:
+You can run the server using Docker:
 
 ```bash
-docker run -it --rm \
-  -e CHESS_RATE_LIMIT=5 \
-  chess-mcp-server
-```
-
-#### Using docker-compose:
-
-Create a `.env` file with your configuration and then run:
-
-```bash
-docker-compose up
+docker run -it --rm chess-mcp-server
 ```
 
 ### Running with Docker in Claude Desktop
@@ -95,18 +74,13 @@ To use the containerized server with Claude Desktop, update the configuration to
         "run",
         "--rm",
         "-i",
-        "-e", "CHESS_RATE_LIMIT",
         "chess-mcp-server"
       ],
-      "env": {
-        "CHESS_RATE_LIMIT": "5"
-      }
+      "env": {}
     }
   }
 }
 ```
-
-This configuration passes the environment variables from Claude Desktop to the Docker container by using the `-e` flag with just the variable name, and providing the actual values in the `env` object.
 
 ## Development
 
@@ -139,7 +113,6 @@ chess-mcp/
 │       ├── server.py        # MCP server implementation
 │       ├── main.py          # Main application logic
 ├── Dockerfile               # Docker configuration
-├── docker-compose.yml       # Docker Compose configuration
 ├── .dockerignore            # Docker ignore file
 ├── pyproject.toml           # Project configuration
 └── README.md                # This file

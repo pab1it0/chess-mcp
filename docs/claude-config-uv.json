@@ -8,9 +8,7 @@
         "run",
         "src/chess_mcp/main.py"
       ],
-      "env": {
-        "CHESS_RATE_LIMIT": "5"
-      }
+      "env": {}
     }
   }
 }

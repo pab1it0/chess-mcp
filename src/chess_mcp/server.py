@@ -7,16 +7,13 @@ from typing import Any, Dict, List, Optional, Union
 from dataclasses import dataclass
 import httpx
 
-from dotenv import load_dotenv
 from mcp.server.fastmcp import FastMCP
 
-load_dotenv()
 mcp = FastMCP("Chess.com API MCP")
 
 @dataclass
 class ChessConfig:
     base_url: str = "https://api.chess.com/pub"
-    rate_limit: int = int(os.environ.get("CHESS_RATE_LIMIT", "10"))
 
 config = ChessConfig()
 

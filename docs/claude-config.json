@@ -8,7 +8,6 @@
       ],
       "cwd": "/Users/Pavel.Shklovsky/github/chess-mcp",
       "env": {
-        "CHESS_RATE_LIMIT": "5",
         "PYTHONPATH": "/Users/Pavel.Shklovsky/github/chess-mcp"
       }
     }

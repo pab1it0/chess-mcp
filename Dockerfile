@@ -35,7 +35,7 @@ ENV PATH="/app/.venv/bin:$PATH"
 # Set environment variables for Chess.com MCP Server
 ENV PYTHONUNBUFFERED=1
 
-# when running the container, add CHESS_RATE_LIMIT environment variable
+# when running the container, add API environment variables
 ENTRYPOINT ["chess-mcp"]
 
 # Label the image
