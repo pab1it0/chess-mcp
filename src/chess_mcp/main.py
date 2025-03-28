@@ -1,14 +1,10 @@
 #!/usr/bin/env python
 import sys
-import dotenv
 from chess_mcp.server import mcp, config
 
 def setup_environment():
-    # Note: We're keeping the dotenv import for consistency with tripadvisor-mcp
-    # but not using its functionality
     print("Using environment variables for configuration")
 
-    # Chess.com API doesn't require authentication
     print(f"Chess.com API configuration:")
     print(f"  Base URL: {config.base_url}")
     
