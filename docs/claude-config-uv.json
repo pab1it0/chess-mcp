@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "chess": {
-      "command": "uv",
+      "command": "/Users/Pavel.Shklovsky/.local/bin/uv",
       "args": [
         "--directory",
         "/Users/Pavel.Shklovsky/github/chess-mcp",

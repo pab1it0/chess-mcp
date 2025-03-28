@@ -35,7 +35,7 @@ ENV PATH="/app/.venv/bin:$PATH"
 # Set environment variables for Chess.com MCP Server
 ENV PYTHONUNBUFFERED=1
 
-# when running the container, add API environment variables
+# when running the container
 ENTRYPOINT ["chess-mcp"]
 
 # Label the image

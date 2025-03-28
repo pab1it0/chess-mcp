@@ -7,8 +7,10 @@ from typing import Any, Dict, List, Optional, Union
 from dataclasses import dataclass
 import httpx
 
+import dotenv
 from mcp.server.fastmcp import FastMCP
 
+dotenv.load_dotenv()
 mcp = FastMCP("Chess.com API MCP")
 
 @dataclass

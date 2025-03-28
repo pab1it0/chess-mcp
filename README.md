@@ -20,26 +20,27 @@ The list of tools is configurable, so you can choose which tools you want to mak
 
 ## Usage
 
-1. Add the server configuration to your client configuration file. For example, for Claude Desktop:
+Add the server configuration to your client configuration file. For example, for Claude Desktop:
 
 ```json
 {
   "mcpServers": {
     "chess": {
-      "command": "uv",
+      "command": "python",
       "args": [
-        "--directory",
-        "<full path to chess-mcp directory>",
-        "run",
-        "src/chess_mcp/main.py"
+        "-m",
+        "src.chess_mcp.main"
       ],
-      "env": {}
+      "cwd": "<full path to chess-mcp directory>",
+      "env": {
+        "PYTHONPATH": "<full path to chess-mcp directory>"
+      }
     }
   }
 }
 ```
 
-> Note: if you see `Error: spawn uv ENOENT` in Claude Desktop, you may need to specify the full path to `uv` or set the environment variable `NO_UV=1` in the configuration.
+> Note: if you see `Error: spawn python ENOENT` in Claude Desktop, you may need to specify the full path to `python`.
 
 ## Docker Usage
 
@@ -63,7 +64,7 @@ docker run -it --rm chess-mcp-server
 
 ### Running with Docker in Claude Desktop
 
-To use the containerized server with Claude Desktop, update the configuration to use Docker with the environment variables:
+To use the containerized server with Claude Desktop, update the configuration to use Docker:
 
 ```json
 {
@@ -75,8 +76,7 @@ To use the containerized server with Claude Desktop, update the configuration to
         "--rm",
         "-i",
         "chess-mcp-server"
-      ],
-      "env": {}
+      ]
     }
   }
 }
@@ -113,7 +113,6 @@ chess-mcp/
 │       ├── server.py        # MCP server implementation
 │       ├── main.py          # Main application logic
 ├── Dockerfile               # Docker configuration
-├── .dockerignore            # Docker ignore file
 ├── pyproject.toml           # Project configuration
 └── README.md                # This file
 ```
