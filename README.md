@@ -4,7 +4,7 @@ A [Model Context Protocol][mcp] (MCP) server for Chess.com's Published Data API.
 
 This provides access to Chess.com player data, game records, and other public information through standardized MCP interfaces, allowing AI assistants to search and analyze chess information.
 
-![Chess MCP Demo](./static/chess-mcp.mp4)
+https://github.com/user-attachments/assets/3b33361b-b604-465c-9f6a-3699b6907757
 
 [mcp]: https://modelcontextprotocol.io
 
