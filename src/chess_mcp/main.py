@@ -12,7 +12,6 @@ def setup_environment():
 
 def run_server():
     """Main entry point for the Chess.com MCP Server"""
-    # Setup environment
     if not setup_environment():
         sys.exit(1)
     

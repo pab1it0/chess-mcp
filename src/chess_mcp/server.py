@@ -19,17 +19,20 @@ class ChessConfig:
 
 config = ChessConfig()
 
-async def make_api_request(endpoint: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
+async def make_api_request(endpoint: str, params: Dict[str, Any] = None, accept_json: bool = True) -> Dict[str, Any]:
     """Make a request to the Chess.com API"""
     url = f"{config.base_url}/{endpoint}"
     headers = {
-        "accept": "application/json"
+        "accept": "application/json" if accept_json else "application/x-chess-pgn"
     }
     
     async with httpx.AsyncClient() as client:
         response = await client.get(url, headers=headers, params=params or {})
         response.raise_for_status()
-        return response.json()
+        if accept_json:
+            return response.json()
+        else:
+            return response.text
 
 @mcp.tool(description="Get a player's profile from Chess.com")
 async def get_player_profile(
@@ -149,6 +152,27 @@ async def get_club_members(
     """
     return await make_api_request(f"club/{url_id}/members")
 
+@mcp.tool(description="Download PGN files for all games in a specific month from Chess.com")
+async def download_player_games_pgn(
+    username: str,
+    year: int,
+    month: int
+) -> str:
+    """
+    Download PGN files for all games in a specific month from Chess.com.
+    
+    Parameters:
+    - username: The Chess.com username
+    - year: Year (YYYY format)
+    - month: Month (MM format, 01-12)
+    
+    Returns:
+    - Multi-game PGN format text containing all games for the month
+    """
+    # Ensure month is two digits
+    month_str = str(month).zfill(2)
+    return await make_api_request(f"player/{username}/games/{year}/{month_str}/pgn", accept_json=False)
+
 @mcp.resource("chess://player/{username}")
 async def player_profile_resource(username: str) -> str:
     """
@@ -234,6 +258,22 @@ async def club_profile_resource(url_id: str) -> str:
         return json.dumps(profile, indent=2)
     except Exception as e:
         return f"Error retrieving club profile: {str(e)}"
+
+@mcp.resource("chess://player/{username}/games/{year}/{month}/pgn")
+async def player_games_pgn_resource(username: str, year: str, month: str) -> str:
+    """
+    Resource that returns a player's games for a specific month in PGN format.
+    
+    Parameters:
+    - username: The Chess.com username
+    - year: Year (YYYY format)
+    - month: Month (MM format, 01-12)
+    """
+    try:
+        pgn_data = await download_player_games_pgn(username=username, year=int(year), month=int(month))
+        return pgn_data
+    except Exception as e:
+        return f"Error downloading PGN data: {str(e)}"
 
 if __name__ == "__main__":
     print(f"Starting Chess.com MCP Server...")

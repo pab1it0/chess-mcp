@@ -22,46 +22,23 @@ The list of tools is configurable, so you can choose which tools you want to mak
 
 Add the server configuration to your client configuration file. For example, for Claude Desktop:
 
-Copy the following configuration to your Claude Desktop configuration file at `~/.config/claude/claude-config.json`:
-
 ```json
 {
   "mcpServers": {
     "chess": {
-      "command": "python",
-      "args": [
-        "-m",
-        "src.chess_mcp.main"
-      ],
-      "cwd": "/Users/Pavel.Shklovsky/github/chess-mcp",
-      "env": {
-        "PYTHONPATH": "/Users/Pavel.Shklovsky/github/chess-mcp"
-      }
-    }
-  }
-}
-```
-
-Alternatively, you can use UV for running the server:
-
-```json
-{
-  "mcpServers": {
-    "chess": {
-      "command": "/Users/Pavel.Shklovsky/.local/bin/uv",
+      "command": "uv",
       "args": [
         "--directory",
-        "/Users/Pavel.Shklovsky/github/chess-mcp",
+        "<full path to chess-mcp directory>",
         "run",
         "src/chess_mcp/main.py"
-      ],
-      "env": {}
+      ]
     }
   }
 }
 ```
 
-> Note: if you see `Error: spawn python ENOENT` in Claude Desktop, you may need to specify the full path to `python`.
+> Note: if you see `Error: spawn uv ENOENT` in Claude Desktop, you may need to specify the full path to `uv` or set the environment variable `NO_UV=1` in the configuration.
 
 ## Docker Usage
 
