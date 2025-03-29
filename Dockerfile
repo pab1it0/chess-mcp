@@ -3,7 +3,6 @@ FROM python:3.12-slim-bookworm AS builder
 
 # Copy uv from the official image
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
-COPY --from=ghcr.io/astral-sh/uv:latest /uvx /usr/local/bin/uvx
 
 WORKDIR /app
 
@@ -17,13 +16,15 @@ COPY src ./src/
 
 # Create a virtual environment, then install dependencies and the project
 RUN uv venv && \
-    . .venv/bin/activate && \
     uv pip install -e .
 
 # Use slim Python image for the runtime stage
 FROM python:3.12-slim-bookworm
 
 WORKDIR /app
+
+# Copy uv from the official image to the runtime image (for future use)
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 # Create a non-root user
 RUN groupadd -r app && useradd -r -g app app
@@ -37,18 +38,20 @@ COPY pyproject.toml /app/
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONPATH="/app:${PYTHONPATH:-}"
+    PYTHONPATH="/app"
+
+# Switch to non-root user
+USER app
 
 # Expose the MCP server port
 EXPOSE 8000
 
-# Add a simple check to debug path issues
-RUN echo "Checking installation:" && \
-    ls -la /app/.venv/bin && \
-    python -c "import sys; print(sys.path)"
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8000/health || exit 1
 
-# Run the MCP server using python module path
-CMD ["python", "-m", "chess_mcp.main"]
+# Run the MCP server using the installed entry point script
+CMD ["/app/.venv/bin/chess-mcp"]
 
 # Image metadata
 LABEL org.opencontainers.image.title="Chess.com API MCP Server" \
