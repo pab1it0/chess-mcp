@@ -4,6 +4,8 @@ A [Model Context Protocol][mcp] (MCP) server for Chess.com's Published Data API.
 
 This provides access to Chess.com player data, game records, and other public information through standardized MCP interfaces, allowing AI assistants to search and analyze chess information.
 
+![Chess MCP Demo](./chess-mcp.mp4)
+
 [mcp]: https://modelcontextprotocol.io
 
 ## Features
@@ -20,7 +22,29 @@ The list of tools is configurable, so you can choose which tools you want to mak
 
 ## Usage
 
-Add the server configuration to your client configuration file. For example, for Claude Desktop:
+### Docker (Recommended)
+
+The easiest way to run chess-mcp with Claude Desktop is using Docker:
+
+```json
+{
+  "mcpServers": {
+    "chess": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "pab1it0/chess-mcp"
+      ]
+    }
+  }
+}
+```
+
+### Running with UV
+
+Alternatively, you can run the server directly using UV. Add the server configuration to your client configuration file:
 
 ```json
 {
@@ -40,7 +64,7 @@ Add the server configuration to your client configuration file. For example, for
 
 > Note: if you see `Error: spawn uv ENOENT` in Claude Desktop, you may need to specify the full path to `uv` or set the environment variable `NO_UV=1` in the configuration.
 
-## Docker Usage
+## Docker Configuration
 
 This project includes Docker support for easy deployment and isolation.
 
@@ -58,26 +82,6 @@ You can run the server using Docker:
 
 ```bash
 docker run -it --rm chess-mcp-server
-```
-
-### Running with Docker in Claude Desktop
-
-To use the containerized server with Claude Desktop, update the configuration to use Docker:
-
-```json
-{
-  "mcpServers": {
-    "chess": {
-      "command": "docker",
-      "args": [
-        "run",
-        "--rm",
-        "-i",
-        "chess-mcp-server"
-      ]
-    }
-  }
-}
 ```
 
 ## Development
