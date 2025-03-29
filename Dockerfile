@@ -1,5 +1,5 @@
 # Use a Python image with uv pre-installed
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS uv
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS builder
 
 # Install the project into `/app`
 WORKDIR /app
@@ -10,35 +10,59 @@ ENV UV_COMPILE_BYTECODE=1
 # Copy from the cache instead of linking since it's a mounted volume
 ENV UV_LINK_MODE=copy
 
-# Install the project's dependencies using the lockfile and settings
+# Copy only dependency files first for better caching
+COPY pyproject.toml uv.lock ./
+
+# Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --frozen --no-install-project --no-dev --no-editable
 
-# Then, add the rest of the project source code and install it
-# Installing separately from its dependencies allows optimal layer caching
-ADD . /app
+# Copy the rest of the source code
+COPY . .
+
+# Install the project
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev --no-editable
 
+# Create a non-root user
+RUN groupadd -r app && useradd -r -g app app
+
+# Use a slim Python image for the final stage
 FROM python:3.12-slim-bookworm
 
 WORKDIR /app
- 
-COPY --from=uv /root/.local /root/.local
-COPY --from=uv --chown=app:app /app/.venv /app/.venv
 
-# Place executables in the environment at the front of the path
-ENV PATH="/app/.venv/bin:$PATH"
+# Create a non-root user with the same UID/GID as in the builder stage
+RUN groupadd -r app && useradd -r -g app app
 
-# Set environment variables for Chess.com MCP Server
-ENV PYTHONUNBUFFERED=1
+# Copy virtual environment from builder stage
+COPY --from=builder --chown=app:app /app/.venv /app/.venv
 
-# when running the container
+# Copy source code (only what's needed for runtime)
+COPY --from=builder --chown=app:app /app/src /app/src
+
+# Set environment variables
+ENV PATH="/app/.venv/bin:$PATH" \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+# Switch to non-root user
+USER app
+
+# Expose the default MCP server port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8000/health || exit 1
+
+# Run the MCP server when container starts
 ENTRYPOINT ["chess-mcp"]
 
-# Label the image
-LABEL maintainer="Pavel Shklovsky" \
-      description="Chess.com API MCP Server" \
-      version="0.1.0"
+# Label the image with metadata
+LABEL org.opencontainers.image.title="Chess.com API MCP Server" \
+      org.opencontainers.image.description="Model Context Protocol server for Chess.com API integration" \
+      org.opencontainers.image.version="0.1.0" \
+      org.opencontainers.image.authors="Pavel Shklovsky" \
+      org.opencontainers.image.source="https://github.com/Pavel.Shklovsky/chess-mcp" \
+      org.opencontainers.image.licenses="MIT"
