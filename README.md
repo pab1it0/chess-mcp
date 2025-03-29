@@ -20,7 +20,29 @@ The list of tools is configurable, so you can choose which tools you want to mak
 
 ## Usage
 
-Add the server configuration to your client configuration file. For example, for Claude Desktop:
+### Docker (Recommended)
+
+The easiest way to run chess-mcp with Claude Desktop is using Docker:
+
+```json
+{
+  "mcpServers": {
+    "chess": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "pab1it0/chess-mcp"
+      ]
+    }
+  }
+}
+```
+
+### Running with UV
+
+Alternatively, you can run the server directly using UV. Add the server configuration to your client configuration file:
 
 ```json
 {
@@ -40,7 +62,7 @@ Add the server configuration to your client configuration file. For example, for
 
 > Note: if you see `Error: spawn uv ENOENT` in Claude Desktop, you may need to specify the full path to `uv` or set the environment variable `NO_UV=1` in the configuration.
 
-## Docker Usage
+## Docker Configuration
 
 This project includes Docker support for easy deployment and isolation.
 
@@ -58,26 +80,6 @@ You can run the server using Docker:
 
 ```bash
 docker run -it --rm chess-mcp-server
-```
-
-### Running with Docker in Claude Desktop
-
-To use the containerized server with Claude Desktop, update the configuration to use Docker:
-
-```json
-{
-  "mcpServers": {
-    "chess": {
-      "command": "docker",
-      "args": [
-        "run",
-        "--rm",
-        "-i",
-        "chess-mcp-server"
-      ]
-    }
-  }
-}
 ```
 
 ## Development
@@ -145,6 +147,7 @@ pytest --cov=src --cov-report=term-missing
 | `get_titled_players` | Players | Get a list of titled players from Chess.com |
 | `get_club_profile` | Clubs | Get information about a club on Chess.com |
 | `get_club_members` | Clubs | Get members of a club on Chess.com |
+| `download_player_games_pgn` | Games | Download PGN files for all games in a specific month from Chess.com |
 
 ## License
 
