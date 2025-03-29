@@ -2,13 +2,11 @@
 
 A [Model Context Protocol][mcp] (MCP) server for Chess.com's Published Data API.
 
-[MCP Official Documentation](https://modelcontextprotocol.io/introduction)
-
 This provides access to Chess.com player data, game records, and other public information through standardized MCP interfaces, allowing AI assistants to search and analyze chess information.
 
 https://github.com/user-attachments/assets/3b33361b-b604-465c-9f6a-3699b6907757
 
-[mcp]: https://modelcontextprotocol.io/introduction
+[mcp]: https://modelcontextprotocol.io/introduction/introduction
 
 ## Features
 
@@ -26,7 +24,7 @@ The list of tools is configurable, so you can choose which tools you want to mak
 
 ### Docker (Recommended)
 
-The easiest way to run chess-mcp with Claude Desktop is using Docker:
+The easiest way to run chess-mcp with [Claude Desktop](https://claude.ai/desktop) is using Docker:
 
 ```json
 {
@@ -64,7 +62,7 @@ Alternatively, you can run the server directly using UV. Add the server configur
 }
 ```
 
-> Note: if you see `Error: spawn uv ENOENT` in Claude Desktop, you may need to specify the full path to `uv` or set the environment variable `NO_UV=1` in the configuration.
+> Note: if you see `Error: spawn uv ENOENT` in [Claude Desktop](https://claude.ai/desktop), you may need to specify the full path to `uv` or set the environment variable `NO_UV=1` in the configuration.
 
 ## Development
 
