@@ -10,20 +10,14 @@ WORKDIR /app
 # Enable bytecode compilation
 ENV UV_COMPILE_BYTECODE=1
 
-# Copy dependency files first for better caching
+# Copy everything needed for installation
 COPY pyproject.toml ./
 COPY uv.lock ./
+COPY src ./src/
 
-# Install dependencies using uv sync
+# Install dependencies and project
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-install-project --no-dev
-
-# Copy source code
-COPY . .
-
-# Install the project using uv (not in editable mode for production)
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-dev
+    uv pip install -e .
 
 # Use slim Python image for the runtime stage
 FROM python:3.12-slim-bookworm
@@ -33,24 +27,25 @@ WORKDIR /app
 # Create a non-root user
 RUN groupadd -r app && useradd -r -g app app
 
-# Copy the virtual environment from the builder stage
+# Copy virtual environment and source code
 COPY --from=builder /app/.venv /app/.venv
-
-# Copy necessary source files
 COPY --from=builder /app/src /app/src
+COPY pyproject.toml /app/
 
-# Configure environment variables
+# Install the package in the final image
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH="/app:$PYTHONPATH"
 
 # Expose the MCP server port
 EXPOSE 8000
 
 # Add a simple check to debug path issues
-RUN echo "Contents of /app/.venv/bin:" && ls -la /app/.venv/bin
+RUN echo "Checking installation:" && \
+    python -c "import sys; print(sys.path); import chess_mcp; print('Package imported successfully!')"
 
-# Run the MCP server using python module path
+# Run the MCP server using the module directly
 CMD ["python", "-m", "chess_mcp.main"]
 
 # Image metadata
