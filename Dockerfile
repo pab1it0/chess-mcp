@@ -15,8 +15,9 @@ COPY pyproject.toml ./
 COPY uv.lock ./
 COPY src ./src/
 
-# Install dependencies and project
-RUN --mount=type=cache,target=/root/.cache/uv \
+# Create a virtual environment, then install dependencies and the project
+RUN uv venv && \
+    . .venv/bin/activate && \
     uv pip install -e .
 
 # Use slim Python image for the runtime stage
@@ -32,20 +33,21 @@ COPY --from=builder /app/.venv /app/.venv
 COPY --from=builder /app/src /app/src
 COPY pyproject.toml /app/
 
-# Install the package in the final image
+# Set environment variables
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONPATH="/app:$PYTHONPATH"
+    PYTHONPATH="/app:${PYTHONPATH:-}"
 
 # Expose the MCP server port
 EXPOSE 8000
 
 # Add a simple check to debug path issues
 RUN echo "Checking installation:" && \
-    python -c "import sys; print(sys.path); import chess_mcp; print('Package imported successfully!')"
+    ls -la /app/.venv/bin && \
+    python -c "import sys; print(sys.path)"
 
-# Run the MCP server using the module directly
+# Run the MCP server using python module path
 CMD ["python", "-m", "chess_mcp.main"]
 
 # Image metadata
