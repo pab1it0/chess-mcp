@@ -28,7 +28,8 @@ COPY pyproject.toml /app/
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONPATH="/app"
+    PYTHONPATH="/app" \
+    PYTHONFAULTHANDLER=1
 
 USER app
 
@@ -39,9 +40,13 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
 
 CMD ["/app/.venv/bin/chess-mcp"]
 
+# GitHub Container Registry Metadata
 LABEL org.opencontainers.image.title="Chess.com API MCP Server" \
       org.opencontainers.image.description="Model Context Protocol server for Chess.com API integration" \
       org.opencontainers.image.version="0.1.0" \
       org.opencontainers.image.authors="Pavel Shklovsky" \
-      org.opencontainers.image.source="https://github.com/Pavel.Shklovsky/chess-mcp" \
-      org.opencontainers.image.licenses="MIT"
+      org.opencontainers.image.source="https://github.com/pab1it0/chess-mcp" \
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.url="https://github.com/pab1it0/chess-mcp" \
+      org.opencontainers.image.documentation="https://github.com/pab1it0/chess-mcp#readme" \
+      org.opencontainers.image.vendor="Pavel Shklovsky"
