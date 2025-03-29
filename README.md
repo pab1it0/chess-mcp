@@ -62,26 +62,6 @@ Alternatively, you can run the server directly using UV. Add the server configur
 
 > Note: if you see `Error: spawn uv ENOENT` in Claude Desktop, you may need to specify the full path to `uv` or set the environment variable `NO_UV=1` in the configuration.
 
-## Docker Configuration
-
-This project includes Docker support for easy deployment and isolation.
-
-### Building the Docker Image
-
-Build the Docker image using:
-
-```bash
-docker build -t chess-mcp-server .
-```
-
-### Running with Docker
-
-You can run the server using Docker:
-
-```bash
-docker run -it --rm chess-mcp-server
-```
-
 ## Development
 
 Contributions are welcome! Please open an issue or submit a pull request if you have any suggestions or improvements.
@@ -101,22 +81,6 @@ source .venv/bin/activate  # On Unix/macOS
 uv pip install -e .
 ```
 
-## Project Structure
-
-The project has been organized with a `src` directory structure:
-
-```
-chess-mcp/
-├── src/
-│   └── chess_mcp/
-│       ├── __init__.py      # Package initialization
-│       ├── server.py        # MCP server implementation
-│       ├── main.py          # Main application logic
-├── Dockerfile               # Docker configuration
-├── pyproject.toml           # Project configuration
-└── README.md                # This file
-```
-
 ### Testing
 
 The project includes a test suite that ensures functionality and helps prevent regressions.
@@ -134,20 +98,23 @@ pytest
 pytest --cov=src --cov-report=term-missing
 ```
 
-### Tools
+## Available Tools
 
-| Tool | Category | Description |
-| --- | --- | --- |
-| `get_player_profile` | Player | Get a player's profile from Chess.com |
-| `get_player_stats` | Player | Get a player's stats from Chess.com |
-| `is_player_online` | Player | Check if a player is currently online on Chess.com |
-| `get_player_current_games` | Games | Get a player's ongoing games on Chess.com |
-| `get_player_games_by_month` | Games | Get a player's games for a specific month from Chess.com |
-| `get_player_game_archives` | Games | Get a list of available monthly game archives for a player on Chess.com |
-| `get_titled_players` | Players | Get a list of titled players from Chess.com |
-| `get_club_profile` | Clubs | Get information about a club on Chess.com |
-| `get_club_members` | Clubs | Get members of a club on Chess.com |
-| `download_player_games_pgn` | Games | Download PGN files for all games in a specific month from Chess.com |
+### Player Information
+- `get_player_profile` - Get a player's profile from Chess.com
+- `get_player_stats` - Get a player's stats from Chess.com
+- `is_player_online` - Check if a player is currently online on Chess.com
+- `get_titled_players` - Get a list of titled players from Chess.com
+
+### Games
+- `get_player_current_games` - Get a player's ongoing games on Chess.com
+- `get_player_games_by_month` - Get a player's games for a specific month from Chess.com
+- `get_player_game_archives` - Get a list of available monthly game archives for a player on Chess.com
+- `download_player_games_pgn` - Download PGN files for all games in a specific month from Chess.com
+
+### Clubs
+- `get_club_profile` - Get information about a club on Chess.com
+- `get_club_members` - Get members of a club on Chess.com
 
 ## License
 
