@@ -24,7 +24,8 @@ The list of tools is configurable, so you can choose which tools you want to mak
 
 ### Docker (Recommended)
 
-The easiest way to run chess-mcp with [Claude Desktop](https://claude.ai/desktop) is using Docker.
+The easiest way to run chess-mcp with [Claude Desktop](https://claude.ai/desktop) is using Docker. If you don't have Docker installed, you can get it from [Docker's official website](https://www.docker.com/get-started/).
+
 
 Edit your Claude Desktop config file:
 * Mac: `~/Library/Application Support/Claude/claude_desktop_config.json`
