@@ -24,7 +24,14 @@ The list of tools is configurable, so you can choose which tools you want to mak
 
 ### Docker (Recommended)
 
-The easiest way to run chess-mcp with [Claude Desktop](https://claude.ai/desktop) is using Docker:
+The easiest way to run chess-mcp with [Claude Desktop](https://claude.ai/desktop) is using Docker.
+
+Edit your Claude Desktop config file:
+* Mac: `~/Library/Application Support/Claude/claude_desktop_config.json`
+* Windows: `%APPDATA%/Claude/claude_desktop_config.json`
+* Linux: `~/.config/Claude/claude_desktop_config.json`
+
+Then add the following configuration:
 
 ```json
 {
@@ -44,7 +51,7 @@ The easiest way to run chess-mcp with [Claude Desktop](https://claude.ai/desktop
 
 ### Running with UV
 
-Alternatively, you can run the server directly using UV. Add the server configuration to your client configuration file:
+Alternatively, you can run the server directly using UV. Edit your Claude Desktop config file (locations listed above) and add the server configuration:
 
 ```json
 {
