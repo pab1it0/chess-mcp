@@ -1,5 +1,7 @@
 # Chess.com MCP Server
 
+![](https://badge.mcpx.dev 'MCP')
+
 A [Model Context Protocol][mcp] (MCP) server for Chess.com's Published Data API.
 
 This provides access to Chess.com player data, game records, and other public information through standardized MCP interfaces, allowing AI assistants to search and analyze chess information.
