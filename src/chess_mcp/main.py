@@ -5,8 +5,8 @@ from chess_mcp.server import mcp, config
 def setup_environment():
     # print("Using environment variables for configuration")
 
-    #print(f"Chess.com API configuration:")
-     # print(f"  Base URL: {config.base_url}")
+    # print(f"Chess.com API configuration:")
+    # print(f"  Base URL: {config.base_url}")
     
     return True
 
