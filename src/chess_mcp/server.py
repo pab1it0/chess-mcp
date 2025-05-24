@@ -47,6 +47,10 @@ def paginate_data(data: List[Any], page_size: int = 50, cursor: Optional[str] = 
     else:
         offset = 0
     
+    # Validate and correct page_size
+    if page_size <= 0:
+        page_size = 50  # Default fallback
+    
     total_count = len(data)
     end_index = offset + page_size
     page_data = data[offset:end_index]
