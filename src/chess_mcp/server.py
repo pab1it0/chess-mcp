@@ -81,7 +81,7 @@ async def make_api_request(endpoint: str, params: Dict[str, Any] = None, accept_
         "accept": "application/json" if accept_json else "application/x-chess-pgn"
     }
     
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(follow_redirects=True) as client:
         response = await client.get(url, headers=headers, params=params or {})
         response.raise_for_status()
         if accept_json:
