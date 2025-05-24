@@ -126,6 +126,55 @@ pytest --cov=src --cov-report=term-missing
 - `get_club_profile` - Get information about a club on Chess.com
 - `get_club_members` - Get members of a club on Chess.com
 
+## Pagination Support
+
+To handle large datasets efficiently and avoid token limit issues, several tools support pagination:
+
+### Paginated Tools
+- `get_player_games_by_month` - Supports pagination with `page_size` and `cursor` parameters
+- `get_titled_players` - Supports pagination with `page_size` and `cursor` parameters  
+- `get_club_members` - Supports pagination with `page_size` and `cursor` parameters
+
+### How to Use Pagination
+
+Each paginated tool accepts optional parameters:
+- `page_size` (optional): Number of items per page (default varies by tool, maximum enforced)
+- `cursor` (optional): Pagination cursor for retrieving subsequent pages
+
+### Example Usage
+
+```python
+# Get first page of games (default page size)
+response = await get_player_games_by_month("username", 2024, 12)
+
+# Get specific page size
+response = await get_player_games_by_month("username", 2024, 12, page_size=25)
+
+# Get next page using cursor from previous response
+next_cursor = response["pagination"]["next_cursor"]
+if next_cursor:
+    next_page = await get_player_games_by_month("username", 2024, 12, cursor=next_cursor)
+```
+
+### Response Format
+
+Paginated responses include both data and pagination metadata:
+
+```json
+{
+  "games": [...],  // or "players", "members" depending on the tool
+  "pagination": {
+    "next_cursor": "eyJ...",  // Base64 cursor for next page, null if no more pages
+    "has_more": true,         // Boolean indicating if more pages exist
+    "total_count": 156,       // Total number of items available
+    "page_size": 50,          // Current page size
+    "current_page": 1         // Current page number
+  }
+}
+```
+
+The pagination uses opaque, base64-encoded cursors that should be treated as tokens. Do not attempt to parse or modify cursors manually.
+
 ## License
 
 MIT
