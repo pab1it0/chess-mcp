@@ -96,7 +96,6 @@ async def get_player_games_by_month(
     - year: Year (YYYY format)
     - month: Month (MM format, 01-12)
     """
-    # Ensure month is two digits
     month_str = str(month).zfill(2)
     return await make_api_request(f"player/{username}/games/{year}/{month_str}")
 
@@ -169,7 +168,6 @@ async def download_player_games_pgn(
     Returns:
     - Multi-game PGN format text containing all games for the month
     """
-    # Ensure month is two digits
     month_str = str(month).zfill(2)
     return await make_api_request(f"player/{username}/games/{year}/{month_str}/pgn", accept_json=False)
 
@@ -276,5 +274,4 @@ async def player_games_pgn_resource(username: str, year: str, month: str) -> str
         return f"Error downloading PGN data: {str(e)}"
 
 if __name__ == "__main__":
-    print(f"Starting Chess.com MCP Server...")
     mcp.run()

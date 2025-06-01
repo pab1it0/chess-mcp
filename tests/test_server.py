@@ -17,12 +17,10 @@ from chess_mcp.main import setup_environment, run_server
 
 @pytest.mark.asyncio
 async def test_make_api_request():
-    # Mock the httpx client response
     mock_response = MagicMock()
     mock_response.json.return_value = {"data": "test_data"}
     mock_response.raise_for_status = MagicMock()
     
-    # Mock the httpx client
     mock_client = MagicMock()
     mock_client.__aenter__.return_value.get.return_value = mock_response
     
@@ -36,7 +34,6 @@ async def test_make_api_request():
 
 @pytest.mark.asyncio
 async def test_get_player_profile():
-    # Mock the make_api_request function
     mock_data = {"username": "testuser", "avatar": "test_url", "status": "active"}
     with patch("chess_mcp.server.make_api_request", new=AsyncMock(return_value=mock_data)):
         result = await get_player_profile("testuser")
@@ -45,7 +42,6 @@ async def test_get_player_profile():
 
 @pytest.mark.asyncio
 async def test_get_player_stats():
-    # Mock the make_api_request function
     mock_data = {"chess_rapid": {"last": {"rating": 1500}}}
     with patch("chess_mcp.server.make_api_request", new=AsyncMock(return_value=mock_data)):
         result = await get_player_stats("testuser")
@@ -54,7 +50,6 @@ async def test_get_player_stats():
 
 @pytest.mark.asyncio
 async def test_is_player_online():
-    # Mock the make_api_request function
     mock_data = {"online": True}
     with patch("chess_mcp.server.make_api_request", new=AsyncMock(return_value=mock_data)):
         result = await is_player_online("testuser")
@@ -63,7 +58,6 @@ async def test_is_player_online():
 
 @pytest.mark.asyncio
 async def test_get_player_current_games():
-    # Mock the make_api_request function
     mock_data = {"games": [{"url": "game_url"}]}
     with patch("chess_mcp.server.make_api_request", new=AsyncMock(return_value=mock_data)):
         result = await get_player_current_games("testuser")
@@ -72,7 +66,6 @@ async def test_get_player_current_games():
 
 @pytest.mark.asyncio
 async def test_get_player_games_by_month():
-    # Mock the make_api_request function
     mock_data = {"games": [{"url": "game_url", "pgn": "pgn_data"}]}
     with patch("chess_mcp.server.make_api_request", new=AsyncMock(return_value=mock_data)):
         result = await get_player_games_by_month("testuser", 2023, 12)
@@ -81,7 +74,6 @@ async def test_get_player_games_by_month():
 
 @pytest.mark.asyncio
 async def test_get_titled_players():
-    # Mock the make_api_request function
     mock_data = {"players": ["player1", "player2"]}
     with patch("chess_mcp.server.make_api_request", new=AsyncMock(return_value=mock_data)):
         result = await get_titled_players("GM")
@@ -95,7 +87,6 @@ async def test_get_titled_players_invalid_title():
 
 @pytest.mark.asyncio
 async def test_get_club_profile():
-    # Mock the make_api_request function
     mock_data = {"name": "Test Club", "members_count": 10}
     with patch("chess_mcp.server.make_api_request", new=AsyncMock(return_value=mock_data)):
         result = await get_club_profile("test-club")
@@ -152,7 +143,6 @@ async def test_player_current_games_resource_error():
 
 @pytest.mark.asyncio
 async def test_get_api_request_params():
-    # Test the make_api_request function with query parameters
     mock_response = MagicMock()
     mock_response.json.return_value = {"data": "test_data"}
     mock_response.raise_for_status = MagicMock()
@@ -167,7 +157,6 @@ async def test_get_api_request_params():
         
     assert result == {"data": "test_data"}
     mock_client.__aenter__.return_value.get.assert_called_once()
-    # Verify parameters were passed correctly
     call_args = mock_client.__aenter__.return_value.get.call_args
     assert call_args[1]["params"] == params
 
@@ -205,7 +194,6 @@ async def test_titled_players_resource_error():
 
 @pytest.mark.asyncio
 async def test_titled_players_resource_value_error():
-    # Test the specific ValueError for invalid title
     with patch("chess_mcp.server.get_titled_players", new=AsyncMock(side_effect=ValueError("Invalid title"))):
         result = await titled_players_resource("INVALID")
     
@@ -247,7 +235,6 @@ async def test_get_player_game_archives():
 
 @pytest.mark.asyncio
 async def test_make_api_request_non_json():
-    # Test the make_api_request function with non-JSON response (PGN)
     mock_response = MagicMock()
     mock_response.text = "[Event \"Live Chess\"]\n[Site \"Chess.com\"]\n"
     mock_response.raise_for_status = MagicMock()
@@ -260,20 +247,17 @@ async def test_make_api_request_non_json():
         
     assert result == "[Event \"Live Chess\"]\n[Site \"Chess.com\"]\n"
     mock_client.__aenter__.return_value.get.assert_called_once()
-    # Verify correct headers were used
     call_args = mock_client.__aenter__.return_value.get.call_args
     assert call_args[1]["headers"]["accept"] == "application/x-chess-pgn"
 
 @pytest.mark.asyncio
 async def test_download_player_games_pgn():
-    # Test the download_player_games_pgn function
     mock_pgn = "[Event \"Live Chess\"]\n[Site \"Chess.com\"]\n"
     
     with patch("chess_mcp.server.make_api_request", new=AsyncMock(return_value=mock_pgn)) as mock_request:
         result = await download_player_games_pgn("testuser", 2023, 12)
     
     assert result == mock_pgn
-    # Check if make_api_request was called with the correct path and accept_json=False
     mock_request.assert_called_once()
     call_args = mock_request.call_args
     assert call_args[0][0] == "player/testuser/games/2023/12/pgn"
@@ -281,7 +265,6 @@ async def test_download_player_games_pgn():
 
 @pytest.mark.asyncio
 async def test_player_games_pgn_resource():
-    # Test the player_games_pgn_resource function
     mock_pgn = "[Event \"Live Chess\"]\n[Site \"Chess.com\"]\n"
     
     with patch("chess_mcp.server.download_player_games_pgn", new=AsyncMock(return_value=mock_pgn)):
@@ -291,28 +274,24 @@ async def test_player_games_pgn_resource():
 
 @pytest.mark.asyncio
 async def test_player_games_pgn_resource_error():
-    # Test error handling in player_games_pgn_resource
     with patch("chess_mcp.server.download_player_games_pgn", new=AsyncMock(side_effect=Exception("Test error"))):
         result = await player_games_pgn_resource("testuser", "2023", "12")
     
     assert "Error downloading PGN data: Test error" == result
 
 def test_setup_environment():
-    # Test the setup_environment function from main.py
     result = setup_environment()
     assert result is True
     
 def test_run_server():
-    # Mock the mcp.run method and sys.exit
     with patch("chess_mcp.server.mcp.run") as mock_run, \
          patch("chess_mcp.main.setup_environment", return_value=True):
         run_server()
         mock_run.assert_called_once_with(transport="stdio")
 
 def test_run_server_setup_failed():
-    # Test when setup fails
     with patch("chess_mcp.main.setup_environment", return_value=False), \
          patch("sys.exit") as mock_exit, \
-         patch("chess_mcp.server.mcp.run"):  # Mock the mcp.run to prevent actual server start
+         patch("chess_mcp.server.mcp.run"):
         run_server()
         mock_exit.assert_called_once_with(1)
