@@ -48,8 +48,3 @@ jobs:
           files: |
             dist/*
             dist/*.sigstore.json
-
-      - name: Publish to MCP Registry
-        uses: pab1it0/mcp-publish-action@v1
-        with:
-          server-json-path: ./server.json
