@@ -1,3 +1,5 @@
+ARG VERSION=0.1.0
+
 FROM python:3.12-slim-bookworm AS builder
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
@@ -14,6 +16,8 @@ RUN uv venv && \
     uv pip install -e .
 
 FROM python:3.12-slim-bookworm
+
+ARG VERSION=0.1.0
 
 WORKDIR /app
 
@@ -40,13 +44,17 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
 
 CMD ["/app/.venv/bin/chess-mcp"]
 
-# GitHub Container Registry Metadata
+# OCI Image Labels
 LABEL org.opencontainers.image.title="Chess.com API MCP Server" \
       org.opencontainers.image.description="Model Context Protocol server for Chess.com API integration" \
-      org.opencontainers.image.version="0.1.0" \
+      org.opencontainers.image.version="${VERSION}" \
       org.opencontainers.image.authors="Pavel Shklovsky" \
       org.opencontainers.image.source="https://github.com/pab1it0/chess-mcp" \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.url="https://github.com/pab1it0/chess-mcp" \
       org.opencontainers.image.documentation="https://github.com/pab1it0/chess-mcp#readme" \
-      org.opencontainers.image.vendor="Pavel Shklovsky"
+      org.opencontainers.image.vendor="Pavel Shklovsky" \
+      io.modelcontextprotocol.server.name="io.github.pab1it0/chess-mcp" \
+      mcp.server.transport.stdio="true" \
+      mcp.server.category="data-retrieval" \
+      mcp.server.tags="chess,chess.com,games,api,player-stats"
