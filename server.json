@@ -1,16 +1,16 @@
 {
-  "$schema": "https://modelcontextprotocol.io/schema/2025-10-17/server.json",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
   "name": "io.github.pab1it0/chess-mcp",
-  "version": "0.1.0",
+  "title": "Chess.com MCP Server",
   "description": "MCP server providing Chess.com player data, game records, and other public information through standardized MCP interfaces",
-  "package": {
-    "type": "oci",
-    "image": "ghcr.io/pab1it0/chess-mcp:0.1.0",
-    "transport": "stdio"
-  },
-  "config": {
-    "env": {}
-  },
-  "repository": "https://github.com/pab1it0/chess-mcp",
-  "website": "https://github.com/pab1it0/chess-mcp"
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "oci",
+      "identifier": "ghcr.io/pab1it0/chess-mcp:0.1.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
 }
