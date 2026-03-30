@@ -20,6 +20,10 @@ https://github.com/user-attachments/assets/3b33361b-b604-465c-9f6a-3699b6907757
 
 The list of tools is configurable, so you can choose which tools you want to make available to the MCP client.
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/pab1ito-chess-mcp).
+
 ## Usage
 
 ### Docker (Recommended)
