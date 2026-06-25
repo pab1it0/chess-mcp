@@ -2,6 +2,7 @@
 """Chess.com MCP Server - Provides tools and resources for Chess.com API integration."""
 
 import os
+import re
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Union
 
@@ -21,6 +22,26 @@ class ChessConfig:
 
 
 config = ChessConfig()
+
+_USERNAME_RE = re.compile(r"^[a-zA-Z0-9_-]{1,50}$")
+_URL_ID_RE = re.compile(r"^[a-zA-Z0-9_-]{1,80}$")
+
+
+def _validate_username(username: str) -> None:
+    if not _USERNAME_RE.match(username):
+        raise ValueError(f"Invalid username '{username}'. Must contain only letters, digits, hyphens or underscores (1-50 chars).")
+
+
+def _validate_url_id(url_id: str) -> None:
+    if not _URL_ID_RE.match(url_id):
+        raise ValueError(f"Invalid club url_id '{url_id}'. Must contain only letters, digits, hyphens or underscores (1-80 chars).")
+
+
+def _validate_year_month(year: int, month: int) -> None:
+    if not (1990 <= year <= 2100):
+        raise ValueError(f"Invalid year '{year}'. Must be between 1990 and 2100.")
+    if not (1 <= month <= 12):
+        raise ValueError(f"Invalid month '{month}'. Must be between 1 and 12.")
 
 
 async def make_api_request(
@@ -55,7 +76,7 @@ async def make_api_request(
         has_params=params is not None
     )
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=30.0) as client:
         try:
             response = await client.get(url, headers=headers, params=params or {})
             response.raise_for_status()
@@ -91,6 +112,7 @@ async def get_player_profile(username: str) -> Dict[str, Any]:
     Returns:
         Player profile data
     """
+    _validate_username(username)
     logger.info("Fetching player profile", username=username)
     return await make_api_request(f"player/{username}")
 
@@ -106,6 +128,7 @@ async def get_player_stats(username: str) -> Dict[str, Any]:
     Returns:
         Player statistics data
     """
+    _validate_username(username)
     logger.info("Fetching player stats", username=username)
     return await make_api_request(f"player/{username}/stats")
 
@@ -121,6 +144,7 @@ async def is_player_online(username: str) -> Dict[str, Any]:
     Returns:
         Online status data
     """
+    _validate_username(username)
     logger.info("Checking player online status", username=username)
     return await make_api_request(f"player/{username}/is-online")
 
@@ -136,6 +160,7 @@ async def get_player_current_games(username: str) -> Dict[str, Any]:
     Returns:
         Current games data
     """
+    _validate_username(username)
     logger.info("Fetching player current games", username=username)
     return await make_api_request(f"player/{username}/games")
 
@@ -157,6 +182,8 @@ async def get_player_games_by_month(
     Returns:
         Games data for the specified month
     """
+    _validate_username(username)
+    _validate_year_month(year, month)
     month_str = str(month).zfill(2)
     logger.info(
         "Fetching player games by month",
@@ -178,6 +205,7 @@ async def get_player_game_archives(username: str) -> Dict[str, Any]:
     Returns:
         List of available game archives
     """
+    _validate_username(username)
     logger.info("Fetching player game archives", username=username)
     return await make_api_request(f"player/{username}/games/archives")
 
@@ -217,6 +245,7 @@ async def get_club_profile(url_id: str) -> Dict[str, Any]:
     Returns:
         Club profile data
     """
+    _validate_url_id(url_id)
     logger.info("Fetching club profile", url_id=url_id)
     return await make_api_request(f"club/{url_id}")
 
@@ -232,6 +261,7 @@ async def get_club_members(url_id: str) -> Dict[str, Any]:
     Returns:
         Club members data
     """
+    _validate_url_id(url_id)
     logger.info("Fetching club members", url_id=url_id)
     return await make_api_request(f"club/{url_id}/members")
 
@@ -253,6 +283,8 @@ async def download_player_games_pgn(
     Returns:
         Multi-game PGN format text containing all games for the month
     """
+    _validate_username(username)
+    _validate_year_month(year, month)
     month_str = str(month).zfill(2)
     logger.info(
         "Downloading player games PGN",
