@@ -34,7 +34,7 @@ def setup_environment() -> bool:
             ],
             wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
             context_class=dict,
-            logger_factory=structlog.PrintLoggerFactory(),
+            logger_factory=structlog.PrintLoggerFactory(file=sys.stderr),
             cache_logger_on_first_use=False,
         )
 
