@@ -1,3 +1,5 @@
+[![MseeP Badge](https://mseep.net/pr/pab1it0-chess-mcp-badge.jpg)](https://mseep.ai/app/pab1it0-chess-mcp)
+
 # Chess.com MCP Server
 
 A [Model Context Protocol][mcp] (MCP) server for Chess.com's Published Data API.
