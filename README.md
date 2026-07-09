@@ -1,4 +1,5 @@
 # Chess.com MCP Server
+[![Trust Score](https://archestra.ai/mcp-catalog/api/badge/quality/pab1it0/chess-mcp)](https://archestra.ai/mcp-catalog/pab1it0__chess-mcp)
 
 A [Model Context Protocol][mcp] (MCP) server for Chess.com's Published Data API.
 
