@@ -14,6 +14,7 @@ https://github.com/user-attachments/assets/3b33361b-b604-465c-9f6a-3699b6907757
 - [x] Search games by date and player
 - [x] Check player online status
 - [x] Get information about clubs and titled players
+- [x] Fetch daily puzzles and player puzzle stats
 - [x] No authentication required (uses Chess.com's public API)
 - [x] Docker containerization support
 - [x] Provide interactive tools for AI assistants
@@ -125,6 +126,11 @@ pytest --cov=src --cov-report=term-missing
 ### Clubs
 - `get_club_profile` - Get information about a club on Chess.com
 - `get_club_members` - Get members of a club on Chess.com
+
+### Puzzles
+- `get_daily_puzzle` - Get today's daily puzzle from Chess.com
+- `get_random_daily_puzzle` - Get a random past daily puzzle from Chess.com
+- `get_player_puzzle_stats` - Get a player's puzzle rating and best Puzzle Rush score from Chess.com
 
 ## License
 

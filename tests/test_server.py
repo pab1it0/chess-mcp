@@ -9,6 +9,7 @@ from chess_mcp.server import (
     get_player_profile, get_player_stats, is_player_online,
     get_player_current_games, get_player_games_by_month, get_player_game_archives,
     get_titled_players, get_club_profile, get_club_members, download_player_games_pgn,
+    get_daily_puzzle, get_random_daily_puzzle, get_player_puzzle_stats,
     player_profile_resource, player_stats_resource,
     player_current_games_resource, player_games_by_month_resource,
     titled_players_resource, club_profile_resource, player_games_pgn_resource
@@ -276,6 +277,65 @@ async def test_download_player_games_pgn():
     call_args = mock_request.call_args
     assert call_args[0][0] == "player/testuser/games/2023/12/pgn"
     assert call_args[1]["accept_json"] is False
+
+@pytest.mark.asyncio
+async def test_get_daily_puzzle():
+    mock_puzzle = {"title": "Test Puzzle", "fen": "8/8/8/8/8/8/8/8 w - - 0 1", "pgn": "1. Bf3# *"}
+
+    with patch("chess_mcp.server.make_api_request", new=AsyncMock(return_value=mock_puzzle)) as mock_request:
+        result = await get_daily_puzzle()
+
+    assert result == mock_puzzle
+    mock_request.assert_called_once()
+    call_args = mock_request.call_args
+    assert call_args[0][0] == "puzzle"
+
+@pytest.mark.asyncio
+async def test_get_random_daily_puzzle():
+    mock_puzzle = {"title": "Random Puzzle", "fen": "8/8/8/8/8/8/8/8 b - - 0 1", "pgn": "1... Qh4+ *"}
+
+    with patch("chess_mcp.server.make_api_request", new=AsyncMock(return_value=mock_puzzle)) as mock_request:
+        result = await get_random_daily_puzzle()
+
+    assert result == mock_puzzle
+    mock_request.assert_called_once()
+    call_args = mock_request.call_args
+    assert call_args[0][0] == "puzzle/random"
+
+@pytest.mark.asyncio
+async def test_get_player_puzzle_stats():
+    mock_stats = {
+        "chess_rapid": {"last": {"rating": 1500}},
+        "chess_blitz": {"last": {"rating": 1400}},
+        "fide": 1600,
+        "tactics": {"highest": {"rating": 2000, "date": 1700000000}, "lowest": {"rating": 1200, "date": 1600000000}},
+        "puzzle_rush": {"best": {"total_attempts": 30, "score": 27}}
+    }
+
+    with patch("chess_mcp.server.make_api_request", new=AsyncMock(return_value=mock_stats)) as mock_request:
+        result = await get_player_puzzle_stats("testuser")
+
+    assert result == {"tactics": mock_stats["tactics"], "puzzle_rush": mock_stats["puzzle_rush"]}
+    mock_request.assert_called_once()
+    call_args = mock_request.call_args
+    assert call_args[0][0] == "player/testuser/stats"
+
+@pytest.mark.asyncio
+async def test_get_player_puzzle_stats_missing_keys():
+    mock_stats = {"chess_rapid": {"last": {"rating": 1500}}}
+
+    with patch("chess_mcp.server.make_api_request", new=AsyncMock(return_value=mock_stats)):
+        result = await get_player_puzzle_stats("testuser")
+
+    assert result == {"tactics": None, "puzzle_rush": None}
+
+@pytest.mark.asyncio
+async def test_get_player_puzzle_stats_invalid_username():
+    with patch("chess_mcp.server.make_api_request", new=AsyncMock()) as mock_request:
+        with pytest.raises(ValueError):
+            await get_player_puzzle_stats("bad/user")
+
+    mock_request.assert_not_called()
 
 @pytest.mark.asyncio
 async def test_player_games_pgn_resource():
