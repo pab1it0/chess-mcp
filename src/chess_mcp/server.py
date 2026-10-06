@@ -299,6 +299,61 @@ async def download_player_games_pgn(
     return result
 
 
+@mcp.tool(description="Get today's daily puzzle from Chess.com: the position (FEN), the solution (PGN), and a board image URL")
+async def get_daily_puzzle() -> Dict[str, Any]:
+    """
+    Return the current daily puzzle on Chess.com.
+
+    Returns:
+        title: The puzzle's name
+        url: The puzzle's page on chess.com
+        publish_time: When it was published, as a Unix timestamp (seconds since 1970)
+        fen: The board position as one line of text
+        pgn: The solution
+        image: A link to the picture of the board
+    """
+    logger.info("Fetching current daily puzzle")
+    return await make_api_request("puzzle")
+
+
+@mcp.tool(description="Get a random past daily puzzle from Chess.com: the position (FEN), the solution (PGN), and a board image URL")
+async def get_random_daily_puzzle() -> Dict[str, Any]:
+    """
+    Returns a random daily puzzle from Chess.com.
+
+    Returns:
+        title: The puzzle's name
+        url: The puzzle's page on chess.com
+        publish_time: When it was published, as a Unix timestamp (seconds since 1970)
+        fen: The board position as one line of text
+        pgn: The solution
+        image: A link to the picture of the board
+    """
+    logger.info("Fetching random daily puzzle")
+    return await make_api_request("puzzle/random")
+
+
+@mcp.tool(description="Get a player's puzzle stats: highest and lowest puzzle ratings with dates, and best puzzle rush run with score and attempts")
+async def get_player_puzzle_stats(username: str) -> Dict[str, Any]:
+    """
+    Get a player's puzzle stats.
+
+    Args:
+        username: The Chess.com username
+
+    Returns:
+        tactics: Puzzle rating: highest and lowest, with dates
+        puzzle_rush: Best Puzzle Rush run: score and attempts
+    """
+    _validate_username(username)
+    logger.info("Fetching player puzzle stats", username=username)
+    stats = await make_api_request(f"player/{username}/stats")
+    return {
+        "tactics": stats.get("tactics"),
+        "puzzle_rush": stats.get("puzzle_rush"),
+    }
+
+
 @mcp.resource("chess://player/{username}")
 async def player_profile_resource(username: str) -> str:
     """
