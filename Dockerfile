@@ -12,8 +12,7 @@ COPY pyproject.toml ./
 COPY uv.lock ./
 COPY src ./src/
 
-RUN uv venv && \
-    uv pip install -e .
+RUN uv sync --frozen --no-dev
 
 FROM python:3.12-slim-bookworm
 
@@ -38,9 +37,6 @@ ENV PATH="/app/.venv/bin:$PATH" \
 USER app
 
 EXPOSE 8000
-
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:8000/health || exit 1
 
 CMD ["/app/.venv/bin/chess-mcp"]
 
